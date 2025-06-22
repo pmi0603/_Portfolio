@@ -321,10 +321,15 @@ export default function Portfolio() {
               transition={{ delay: 0.8 }}
               className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-2 sm:space-y-0 sm:space-x-6"
             >
-              <div className="flex items-center space-x-2 text-gray-300">
-                <Phone className="w-4 h-4" />
-                <span className="text-sm lg:text-base">7973745181</span>
-              </div>
+<div className="flex items-center space-x-2 text-gray-300">
+  <Phone className="w-4 h-4" />
+  <a 
+    href="tel:+917973745181" 
+    className="text-sm lg:text-base hover:text-pink-400 transition-colors cursor-pointer"
+  >
+    7973745181
+  </a>
+</div>
               <div className="flex items-center space-x-2 text-gray-300">
                 <MapPin className="w-4 h-4" />
                 <span className="text-sm lg:text-base">Dehradun, India</span>
