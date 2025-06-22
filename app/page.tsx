@@ -305,8 +305,8 @@ export default function Portfolio() {
                 className="border-purple-500/30 bg-slate-800/50 text-purple-200 hover:bg-slate-700/70 hover:border-purple-400/50 backdrop-blur-sm w-full sm:w-auto"
                 onClick={() => {
                   const link = document.createElement("a")
-                  link.href = "/resume/YOUR_PDF_NAME.pdf" // Change this to your actual PDF name
-                  link.download = "YOUR_PDF_NAME.pdf" // Change this to your desired download name
+                  link.href = "/resume/Prashant_Mishra_Resume.pdf" // Change this to your actual PDF name
+                  link.download = "Prashant_Mishra_Resume.pdf" // Change this to your desired download name
                   link.click()
                 }}
               >
