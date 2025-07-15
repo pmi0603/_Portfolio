@@ -19,11 +19,14 @@ import {
   Star,
   Sun,
   Moon,
+  Laptop,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+
+// Removed custom LeetCodeIcon and CodeChefIcon as Laptop will be used
 
 export default function Portfolio() {
   const [currentTime, setCurrentTime] = useState("")
@@ -165,7 +168,7 @@ export default function Portfolio() {
       status: "Completed",
       impact: "50% reduction in security incidents",
       date: "Feb 2023 - Apr 2023",
-      githubUrl: "https://github.com/pmi0603/Audio-Translator",
+      githubUrl: "",
       highlights: [
         "Industry-standard user authentication protocol",
         "30% reduction in voting errors through validation",
@@ -193,6 +196,7 @@ export default function Portfolio() {
       status: "In Development",
       impact: "Automated document processing",
       date: "Present",
+      githubUrl: "",
       highlights: [
         "OCR text extraction from image URLs",
         "RandomForest ML model for entity prediction",
@@ -1605,6 +1609,48 @@ export default function Portfolio() {
                   } transition-all duration-300 group-hover:scale-110`}
                 >
                   <Linkedin className="w-6 h-6" />
+                </Button>
+              </motion.a>
+              <motion.a
+                href="https://leetcode.com/u/mishraprashant/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                aria-label="LeetCode Profile"
+              >
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={`${
+                    isDayMode
+                      ? "text-gray-600 hover:text-[#FFA116] hover:bg-[#FFA116]/10"
+                      : "text-gray-400 hover:text-[#FFA116] hover:bg-[#FFA116]/10"
+                  } transition-all duration-300 group-hover:scale-110`}
+                >
+                  <Laptop className="w-6 h-6" /> {/* Using Laptop icon */}
+                </Button>
+              </motion.a>
+              <motion.a
+                href="https://www.codechef.com/users/buffy_lark_70"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                aria-label="CodeChef Profile"
+              >
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={`${
+                    isDayMode
+                      ? "text-gray-600 hover:text-[#5B4638] hover:bg-[#5B4638]/10"
+                      : "text-gray-400 hover:text-[#5B4638] hover:bg-[#5B4638]/10"
+                  } transition-all duration-300 group-hover:scale-110`}
+                >
+                  <Laptop className="w-6 h-6" /> {/* Using Laptop icon */}
                 </Button>
               </motion.a>
             </div>
