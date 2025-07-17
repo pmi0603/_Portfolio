@@ -2,57 +2,29 @@
 
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import {
-  ChevronDown,
-  Download,
-  Mail,
-  Phone,
-  MapPin,
-  Github,
-  Linkedin,
-  ExternalLink,
-  Code,
-  Database,
-  Globe,
-  Zap,
-  Award,
-  Star,
-  Sun,
-  Moon,
-  Laptop,
-} from "lucide-react"
+import { ChevronDown, Download, Mail, Phone, MapPin, Github, Linkedin, ExternalLink, Code, Database, Globe, Zap, Award, Star, Sun, Moon, Laptop } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-
-// Removed custom LeetCodeIcon and CodeChefIcon as Laptop will be used
+import { useTheme } from "next-themes"
+import DeveloperLogo from "@/components/developer-logo" // Import the new component
 
 export default function Portfolio() {
-  const [currentTime, setCurrentTime] = useState("")
-  const [greeting, setGreeting] = useState("")
-  const [activeSection, setActiveSection] = useState("hero")
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [isDayMode, setIsDayMode] = useState(false)
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
-  // Load theme from localStorage on mount
+  const [currentTime, setCurrentTime] = useState<string | null>(null)
+  const [greeting, setGreeting] = useState<string | null>(null)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+
   useEffect(() => {
-    const savedTheme = localStorage.getItem("portfolio-theme")
-    if (savedTheme) {
-      setIsDayMode(savedTheme === "day")
-    } else {
-      // Auto-detect based on time
-      const hour = new Date().getHours()
-      setIsDayMode(hour >= 6 && hour < 18)
-    }
+    setMounted(true)
   }, [])
 
-  // Save theme to localStorage when changed
   useEffect(() => {
-    localStorage.setItem("portfolio-theme", isDayMode ? "day" : "night")
-  }, [isDayMode])
+    if (!mounted) return
 
-  useEffect(() => {
     const updateTime = () => {
       const now = new Date()
       const hour = now.getHours()
@@ -67,43 +39,38 @@ export default function Portfolio() {
     updateTime()
     const interval = setInterval(updateTime, 1000)
     return () => clearInterval(interval)
-  }, [])
+  }, [mounted])
 
   useEffect(() => {
+    if (!mounted) return
+
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY })
     }
 
     window.addEventListener("mousemove", handleMouseMove)
     return () => window.removeEventListener("mousemove", handleMouseMove)
-  }, [])
+  }, [mounted])
 
   const skills = [
-    // Programming Languages
     { name: "C/C++", level: 80, icon: Code, category: "Programming" },
     { name: "Python", level: 75, icon: Code, category: "Programming" },
     { name: "JavaScript", level: 85, icon: Code, category: "Programming" },
     { name: "PHP", level: 70, icon: Code, category: "Programming" },
-
-    // Web Technologies
     { name: "React.js", level: 80, icon: Globe, category: "Web" },
     { name: "Express.js", level: 75, icon: Globe, category: "Web" },
     { name: "HTML/CSS", level: 90, icon: Globe, category: "Web" },
-
-    // Databases
     { name: "MongoDB", level: 75, icon: Database, category: "Database" },
     { name: "SQL/MySQL", level: 80, icon: Database, category: "Database" },
-
-    // Tools & Platforms
     { name: "Git/GitHub", level: 85, icon: Code, category: "Tools" },
     { name: "Jenkins (CI/CD)", level: 65, icon: Zap, category: "Tools" },
     { name: "MATLAB", level: 70, icon: Code, category: "Tools" },
     { name: "Excel", level: 75, icon: Database, category: "Tools" },
-
-    // Specialized Skills
     { name: "Data Structures & Algorithms", level: 80, icon: Database, category: "Core" },
     { name: "Machine Learning", level: 72, icon: Zap, category: "AI/ML" },
   ]
+
+  const isDayMode = theme === "light"
 
   const skillCategories = {
     Programming: {
@@ -168,7 +135,7 @@ export default function Portfolio() {
       status: "Completed",
       impact: "50% reduction in security incidents",
       date: "Feb 2023 - Apr 2023",
-      githubUrl: "",
+      githubUrl: "https://github.com/pmi0603/Audio-Translator",
       highlights: [
         "Industry-standard user authentication protocol",
         "30% reduction in voting errors through validation",
@@ -196,7 +163,6 @@ export default function Portfolio() {
       status: "In Development",
       impact: "Automated document processing",
       date: "Present",
-      githubUrl: "",
       highlights: [
         "OCR text extraction from image URLs",
         "RandomForest ML model for entity prediction",
@@ -244,7 +210,6 @@ export default function Portfolio() {
     },
   ]
 
-  // Enhanced Typing animation for cycling titles
   const titles = ["Prashant", "Developer", "Problem Solver", "Tech Enthusiast"]
   const [displayedText, setDisplayedText] = useState("")
   const [titleIndex, setTitleIndex] = useState(0)
@@ -259,35 +224,30 @@ export default function Portfolio() {
       const pauseTimeout = setTimeout(() => {
         setIsPaused(false)
         setIsDeleting(true)
-      }, 2000) // Pause for 2 seconds before starting to delete
+      }, 2000)
       return () => clearTimeout(pauseTimeout)
     }
 
     if (!isDeleting && charIndex < currentTitle.length) {
-      // Typing forward
       const timeout = setTimeout(() => {
         setDisplayedText(currentTitle.slice(0, charIndex + 1))
         setCharIndex(charIndex + 1)
       }, 150)
       return () => clearTimeout(timeout)
     } else if (!isDeleting && charIndex === currentTitle.length) {
-      // Finished typing, pause before deleting
       setIsPaused(true)
     } else if (isDeleting && charIndex > 0) {
-      // Deleting backward
       const timeout = setTimeout(() => {
         setDisplayedText(currentTitle.slice(0, charIndex - 1))
         setCharIndex(charIndex - 1)
       }, 100)
       return () => clearTimeout(timeout)
     } else if (isDeleting && charIndex === 0) {
-      // Finished deleting, move to next title
       setIsDeleting(false)
       setTitleIndex((titleIndex + 1) % titles.length)
     }
   }, [charIndex, isDeleting, titleIndex, isPaused, titles])
 
-  // Theme-based styles
   const themeStyles = {
     background: isDayMode
       ? "bg-gradient-to-br from-blue-50 via-indigo-100 to-purple-100"
@@ -312,7 +272,7 @@ export default function Portfolio() {
         transition={{ delay: 1 }}
       >
         <Button
-          onClick={() => setIsDayMode(!isDayMode)}
+          onClick={() => setTheme(isDayMode ? "dark" : "light")}
           className={`w-14 h-14 rounded-full ${
             isDayMode
               ? "bg-gradient-to-r from-orange-400 to-yellow-500 hover:from-orange-500 hover:to-yellow-600"
@@ -326,110 +286,116 @@ export default function Portfolio() {
         </Button>
       </motion.div>
 
-      {/* Mouse Trail Effect */}
-      <div
-        className={`fixed w-6 h-6 ${
-          isDayMode ? "bg-orange-400/40" : "bg-pink-500/30"
-        } rounded-full pointer-events-none z-50 transition-all duration-300 ease-out`}
-        style={{
-          left: mousePosition.x - 12,
-          top: mousePosition.y - 12,
-          transform: "scale(1)",
-        }}
-      />
-      <div
-        className={`fixed w-3 h-3 ${
-          isDayMode ? "bg-yellow-400/60" : "bg-purple-400/50"
-        } rounded-full pointer-events-none z-50 transition-all duration-500 ease-out`}
-        style={{
-          left: mousePosition.x - 6,
-          top: mousePosition.y - 6,
-          transform: "scale(1)",
-        }}
-      />
-
-      {/* Enhanced Animated Background */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        {isDayMode ? (
-          // Day Mode Background
-          <>
-            <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-500"></div>
-
-            {/* Sun Rays */}
-            {[...Array(8)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-1 h-20 bg-gradient-to-t from-transparent to-yellow-300/30"
-                style={{
-                  left: "50%",
-                  top: "20%",
-                  transformOrigin: "bottom center",
-                }}
-                animate={{
-                  rotate: [i * 45, i * 45 + 360],
-                }}
-                transition={{
-                  duration: 20,
-                  repeat: Number.POSITIVE_INFINITY,
-                  ease: "linear",
-                }}
-              />
-            ))}
-          </>
-        ) : (
-          // Night Mode Background
-          <>
-            <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-500"></div>
-
-            {/* Twinkling Stars */}
-            {[...Array(50)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-1 h-1 bg-white rounded-full"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                }}
-                animate={{
-                  opacity: [0, 1, 0],
-                  scale: [0.5, 1, 0.5],
-                }}
-                transition={{
-                  duration: Math.random() * 3 + 2,
-                  repeat: Number.POSITIVE_INFINITY,
-                  delay: Math.random() * 2,
-                }}
-              />
-            ))}
-          </>
-        )}
-
-        {/* Floating Particles */}
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className={`absolute w-1 h-1 ${isDayMode ? "bg-orange-300/40" : "bg-white/20"} rounded-full`}
-            animate={{
-              x: [0, Math.random() * 100 - 50],
-              y: [0, Math.random() * 100 - 50],
-              opacity: [0, 1, 0],
-            }}
-            transition={{
-              duration: Math.random() * 3 + 2,
-              repeat: Number.POSITIVE_INFINITY,
-              delay: Math.random() * 2,
-            }}
+      {/* Mouse Trail Effect - only render if mounted */}
+      {mounted && (
+        <>
+          <div
+            className={`fixed w-6 h-6 ${
+              isDayMode ? "bg-orange-400/40" : "bg-pink-500/30"
+            } rounded-full pointer-events-none z-50 transition-all duration-300 ease-out`}
             style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              left: mousePosition.x - 12,
+              top: mousePosition.y - 12,
+              transform: "scale(1)",
             }}
           />
-        ))}
-      </div>
+          <div
+            className={`fixed w-3 h-3 ${
+              isDayMode ? "bg-yellow-400/60" : "bg-purple-400/50"
+            } rounded-full pointer-events-none z-50 transition-all duration-500 ease-out`}
+            style={{
+              left: mousePosition.x - 6,
+              top: mousePosition.y - 6,
+              transform: "scale(1)",
+            }}
+          />
+        </>
+      )}
+
+      {/* Enhanced Animated Background - only render if mounted */}
+      {mounted && (
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          {isDayMode ? (
+            // Day Mode Background
+            <>
+              <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+              <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-yellow-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-500"></div>
+
+              {/* Sun Rays */}
+              {[...Array(8)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-1 h-20 bg-gradient-to-t from-transparent to-yellow-300/30"
+                  style={{
+                    left: "50%",
+                    top: "20%",
+                    transformOrigin: "bottom center",
+                  }}
+                  animate={{
+                    rotate: [i * 45, i * 45 + 360],
+                  }}
+                  transition={{
+                    duration: 20,
+                    repeat: Number.POSITIVE_INFINITY,
+                    ease: "linear",
+                  }}
+                />
+              ))}
+            </>
+          ) : (
+            // Night Mode Background
+            <>
+              <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
+              <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-1000"></div>
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse delay-500"></div>
+
+              {/* Twinkling Stars */}
+              {[...Array(50)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-1 h-1 bg-white rounded-full"
+                  style={{
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                  }}
+                  animate={{
+                    opacity: [0, 1, 0],
+                    scale: [0.5, 1, 0.5],
+                  }}
+                  transition={{
+                    duration: Math.random() * 3 + 2,
+                    repeat: Number.POSITIVE_INFINITY,
+                    delay: Math.random() * 2,
+                  }}
+                />
+              ))}
+            </>
+          )}
+
+          {/* Floating Particles */}
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              className={`absolute w-1 h-1 ${isDayMode ? "bg-orange-300/40" : "bg-white/20"} rounded-full`}
+              animate={{
+                x: [0, Math.random() * 100 - 50],
+                y: [0, Math.random() * 100 - 50],
+                opacity: [0, 1, 0],
+              }}
+              transition={{
+                duration: Math.random() * 3 + 2,
+                repeat: Number.POSITIVE_INFINITY,
+                delay: Math.random() * 2,
+              }}
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+              }}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Navigation */}
       <nav
@@ -501,7 +467,9 @@ export default function Portfolio() {
                   transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY }}
                 />
                 <span>Available for opportunities</span>
-                <span className={`${isDayMode ? "text-orange-600" : "text-pink-400"}`}>• {currentTime}</span>
+                <span className={`${isDayMode ? "text-orange-600" : "text-pink-400"}`}>
+                  • {mounted ? currentTime : "Loading..."}
+                </span>
               </motion.div>
 
               <motion.h1
@@ -510,7 +478,9 @@ export default function Portfolio() {
                 transition={{ delay: 0.3 }}
                 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight"
               >
-                <span className={isDayMode ? "text-gray-700" : "text-gray-300"}>Hi, {greeting}</span>
+                <span className={isDayMode ? "text-gray-700" : "text-gray-300"}>
+                  Hi, {mounted ? greeting : "there"}
+                </span>
                 <br />
                 <span
                   className={`bg-gradient-to-r ${
@@ -632,98 +602,7 @@ export default function Portfolio() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative flex justify-center lg:justify-end"
           >
-            <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-80 lg:h-80 xl:w-96 xl:h-96">
-              {/* Enhanced PM Logo with Day/Night Theme */}
-              <motion.div
-                className="absolute inset-0 rounded-full opacity-30"
-                animate={{
-                  background: isDayMode
-                    ? [
-                        "linear-gradient(45deg, #f59e0b, #ef4444)",
-                        "linear-gradient(45deg, #ef4444, #f97316)",
-                        "linear-gradient(45deg, #f97316, #eab308)",
-                        "linear-gradient(45deg, #eab308, #f59e0b)",
-                      ]
-                    : [
-                        "linear-gradient(45deg, #ff0000, #ff7f00)",
-                        "linear-gradient(45deg, #ff7f00, #ffff00)",
-                        "linear-gradient(45deg, #ffff00, #00ff00)",
-                        "linear-gradient(45deg, #00ff00, #0000ff)",
-                        "linear-gradient(45deg, #0000ff, #4b0082)",
-                        "linear-gradient(45deg, #4b0082, #9400d3)",
-                        "linear-gradient(45deg, #9400d3, #ff0000)",
-                      ],
-                  scale: [1, 1.1, 1],
-                }}
-                transition={{
-                  background: { duration: isDayMode ? 2 : 3, repeat: Number.POSITIVE_INFINITY },
-                  scale: { duration: 2, repeat: Number.POSITIVE_INFINITY },
-                }}
-              />
-              <motion.div
-                className="absolute inset-4 rounded-full"
-                animate={{
-                  background: isDayMode
-                    ? [
-                        "linear-gradient(135deg, #f97316 0%, #eab308 100%)",
-                        "linear-gradient(135deg, #ef4444 0%, #f97316 100%)",
-                        "linear-gradient(135deg, #eab308 0%, #f59e0b 100%)",
-                        "linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)",
-                      ]
-                    : [
-                        "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                        "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-                        "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
-                        "linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)",
-                        "linear-gradient(135deg, #fa709a 0%, #fee140 100%)",
-                        "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                      ],
-                  rotate: [0, 360],
-                }}
-                transition={{
-                  background: { duration: isDayMode ? 3 : 4, repeat: Number.POSITIVE_INFINITY },
-                  rotate: { duration: 8, repeat: Number.POSITIVE_INFINITY, ease: "linear" },
-                }}
-              />
-              <motion.div
-                className={`absolute inset-8 ${
-                  isDayMode ? "bg-white" : "bg-slate-900"
-                } rounded-full flex items-center justify-center shadow-2xl transition-colors duration-500`}
-                animate={{
-                  scale: [1, 1.05, 1],
-                  boxShadow: isDayMode
-                    ? [
-                        "0 0 20px rgba(249, 115, 22, 0.3)",
-                        "0 0 40px rgba(234, 179, 8, 0.4)",
-                        "0 0 20px rgba(249, 115, 22, 0.3)",
-                      ]
-                    : [
-                        "0 0 20px rgba(236, 72, 153, 0.3)",
-                        "0 0 40px rgba(168, 85, 247, 0.4)",
-                        "0 0 20px rgba(236, 72, 153, 0.3)",
-                      ],
-                }}
-                transition={{
-                  duration: 3,
-                  repeat: Number.POSITIVE_INFINITY,
-                }}
-              >
-                <motion.div
-                  className={`text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r ${
-                    isDayMode ? "from-orange-600 to-red-600" : "from-pink-500 to-orange-500"
-                  } bg-clip-text text-transparent transition-all duration-500`}
-                  animate={{
-                    scale: [1, 1.1, 1],
-                  }}
-                  transition={{
-                    duration: 2,
-                    repeat: Number.POSITIVE_INFINITY,
-                  }}
-                >
-                  PM
-                </motion.div>
-              </motion.div>
-            </div>
+            <DeveloperLogo size={300} /> {/* Use the new DeveloperLogo component */}
           </motion.div>
         </div>
 
@@ -1021,8 +900,8 @@ export default function Portfolio() {
               </div>
             </div>
           </div>
-        </div>
-      </section>
+          </div>
+        </section>
 
       {/* Skills Section */}
       <section id="skills" className="py-16 lg:py-20 relative">
@@ -1605,7 +1484,7 @@ export default function Portfolio() {
                   className={`${
                     isDayMode
                       ? "text-gray-600 hover:text-[#0077B5] hover:bg-[#0077B5]/10"
-                      : "text-gray-400 hover:text-[#0077B5] hover:bg-[#0077B5]/10"
+                      : "text-gray-400 hover:text-white hover:bg-[#0077B5]/10"
                   } transition-all duration-300 group-hover:scale-110`}
                 >
                   <Linkedin className="w-6 h-6" />
@@ -1629,7 +1508,7 @@ export default function Portfolio() {
                       : "text-gray-400 hover:text-[#FFA116] hover:bg-[#FFA116]/10"
                   } transition-all duration-300 group-hover:scale-110`}
                 >
-                  <Laptop className="w-6 h-6" /> {/* Using Laptop icon */}
+                  <Laptop className="w-6 h-6" />
                 </Button>
               </motion.a>
               <motion.a
@@ -1650,7 +1529,7 @@ export default function Portfolio() {
                       : "text-gray-400 hover:text-[#5B4638] hover:bg-[#5B4638]/10"
                   } transition-all duration-300 group-hover:scale-110`}
                 >
-                  <Laptop className="w-6 h-6" /> {/* Using Laptop icon */}
+                  <Laptop className="w-6 h-6" />
                 </Button>
               </motion.a>
             </div>
