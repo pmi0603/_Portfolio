@@ -12,7 +12,7 @@ const ubuntu = Ubuntu({
 })
 
 export const metadata: Metadata = {
-  title: "Prashant Mishra's Portfolio", // Updated title for clarity
+  title: "Prashant Mishra", // Updated title for clarity
   description: "Dynamic HR Portfolio showcasing Prashant Mishra's skills and projects.", // Updated description
   generator: "v0.dev",
 }
